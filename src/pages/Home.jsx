@@ -5,9 +5,10 @@ import { FaSearch } from "react-icons/fa";
 import {motion} from "framer-motion"
 import { Link, Route, Routes } from "react-router-dom";
 import { Projects, SignUp} from "./index"
+import { useSelector } from "react-redux";
 const Home = () => {
   const [isSideMenu, setIsSideMenu] = useState(false);
-  const [user, setUser] = useState()
+  const user = useSelector((state) => state.user?.user)
   return (
     <>
       <div

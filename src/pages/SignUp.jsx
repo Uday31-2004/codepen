@@ -3,19 +3,22 @@ import { UserAuthInput } from "../components";
 import { FaEnvelope, FaGithub } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { MdPassword } from "react-icons/md";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { signInWithGithub, signInWithGoogle } from "../utils/auth";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { auth } from "../config/firebase.config";
+import { fadeInOut } from "../animations";
 const Signup = () => {
   const [email, setEmail] = useState();
   const [pass, setPass] = useState();
-  const [getEmailValidationStatus, setGetEmailValidationStatus] =
-    useState(false);
+  const [getEmailValidationStatus, setGetEmailValidationStatus] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
+  const [alert, setAlert] = useState(false)
+  const [alertMsg, setAlertMsg] = useState("")
+  
 
   const createNewUser = async () => {
     if (getEmailValidationStatus) {
@@ -39,6 +42,19 @@ const Signup = () => {
         })
         .catch((err) => {
           console.log(err.message);
+          if(err.message.includes("invalid-credential")){
+            setAlert(true)
+            setAlertMsg("Invalid Id: User not found")
+          }else if(err.message.includes("wrong-password")){
+            setAlert(true)
+            setAlertMsg("Wrong Password")
+          }else{
+            setAlert(true)
+            setAlertMsg("Temporary Disabled due to many failed login")
+          }
+          setInterval(()=>{
+            setAlert(false)
+          }, 4000)
         });
     }
   };
@@ -75,9 +91,9 @@ const Signup = () => {
             isPass={true}
           />
           {/* alert section */}
-            <motion.p className="text-red-500">
-              some alert
-            </motion.p>
+          <AnimatePresence>
+            {alert && <motion.p key={"Alert Message"} {...fadeInOut} className="text-red-500">{alertMsg}</motion.p>}
+          </AnimatePresence>
           {/* login section */}
           {!isLogin ? (
             <motion.div
@@ -91,7 +107,7 @@ const Signup = () => {
             </motion.div>
           ) : (
             <motion.div
-            onClick={loginWithEmailPassword}
+              onClick={loginWithEmailPassword}
               whileTap={{ scale: 0.9 }}
               className="flex items-center justify-center w-full py-3 rounded-xl hover:bg-emrald-400 cursor-pointer bg-emrald-500"
             >
@@ -141,11 +157,11 @@ const Signup = () => {
             <p className="text-xl text-white">Sign In with Google</p>
           </motion.div>
           {/* or section*/}
-          <div className="flex items-center justify-center gap-12">
+          {/*<div className="flex items-center justify-center gap-12">
             <div className="h-[1px] bg-[rgba(256,256,256,0.2)] rounded-md w-24"></div>
             <p className="text-sm text-[rgba(256,256,256,0.2)]">OR</p>
             <div className="h-[1px] bg-[rgba(256,256,256,0.2)] rounded-md w-24"></div>
-          </div>
+          </div> */}
           {/* Sign in with github */}
           <motion.div
             onClick={signInWithGithub}
