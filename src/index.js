@@ -8,10 +8,10 @@ import Store from "./context/store"
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <Provider store={Store}>
       <Router>
+    <Provider store={Store}>
         <App />
-      </Router>{" "}
     </Provider>
+      </Router>
   </React.StrictMode>
 );

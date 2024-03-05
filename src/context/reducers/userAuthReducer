@@ -3,7 +3,7 @@ const userAuthReducer = (state = null, action) => {
     case "SET_USER":
       return {
         ...state,
-        user: null,
+        user: action.user,
       };
     case "SET_USER_NULL":
       return {
