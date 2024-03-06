@@ -42,13 +42,16 @@ const NewProject = () => {
 
   const saveProgram = async()=>{
     const id =`${Date.now()}`
+    const username=user?.username || `${user?.email.split("@")[0]} `
     const _doc={
       id:id,
       title:title,
       html:html,
       css:css,
       js:js,
-      output:output
+      output:output,
+      username:username
+      
     }
     await setDoc(doc(db, "Projects", id), _doc)
     .then((res)=>{

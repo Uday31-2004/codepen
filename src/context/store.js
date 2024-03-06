@@ -4,11 +4,13 @@ import { configureStore } from "@reduxjs/toolkit";
 // import { UserAuthInput } from "../components";
 import userSlice from "./slice/userSlice";
 import  projectSlice  from "./slice/projectSlice";
+import searchSlice from "./slice/searchSlice";
 
 export default configureStore({
     reducer: {
         user: userSlice,
-        project: projectSlice
+        project: projectSlice,
+        search: searchSlice
     }
 })
 
