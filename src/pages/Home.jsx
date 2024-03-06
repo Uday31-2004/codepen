@@ -11,7 +11,7 @@ const Home = () => {
   const [isSideMenu, setIsSideMenu] = useState(false);
   const user = useSelector(state => state?.user?.value)
 
-  console.log("USER", user);
+  
   return (
     <>
       <div

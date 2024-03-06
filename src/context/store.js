@@ -2,12 +2,13 @@
 // import myReducer from "./reducers/index";
 import { configureStore } from "@reduxjs/toolkit";
 // import { UserAuthInput } from "../components";
-import userAuthReducer from "./reducers/userAuthReducer";
 import userSlice from "./slice/userSlice";
+import  projectSlice  from "./slice/projectSlice";
 
 export default configureStore({
     reducer: {
-        user: userSlice
+        user: userSlice,
+        project: projectSlice
     }
 })
 

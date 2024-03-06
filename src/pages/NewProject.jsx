@@ -4,18 +4,29 @@ import { FcSettings } from "react-icons/fc";
 import SplitPane from "react-split-pane";
 import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
+import { Link } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
+import { MdCheck, MdEdit } from "react-icons/md";
+import { useSelector } from "react-redux";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "../config/firebase.config";
+import { Alert, UserProfileDetail } from "../components";
 const NewProject = () => {
   const [html, setHtml] = useState("");
   const [css, setCss] = useState("");
   const [js, setJs] = useState("");
   const [output, setOutput] = useState("");
+  const [alert, setAlert] = useState(false);
 
-    useEffect(()=>{
-        updateOutput()
-    },[html,css,js])
+  const [isTitle, setIsTitle] = useState("");
+  const [title, setTitle] = useState("Untitled");
+  const user = useSelector((state) => state?.user?.value);
+  useEffect(() => {
+    updateOutput();
+  }, [html, css, js]);
 
-  const updateOutput =()=>{
-    const combineoutput =`
+  const updateOutput = () => {
+    const combineoutput = `
     <html>
         <head>
             <style>${css}</style>
@@ -25,19 +36,129 @@ const NewProject = () => {
             <script>${js}</script>
         </body>
     </html>
-    `
-    setOutput(combineoutput)
+    `;
+    setOutput(combineoutput);
+  };
+
+  const saveProgram = async()=>{
+    const id =`${Date.now()}`
+    const _doc={
+      id:id,
+      title:title,
+      html:html,
+      css:css,
+      js:js,
+      output:output
+    }
+    await setDoc(doc(db, "Projects", id), _doc)
+    .then((res)=>{
+      setAlert(true)
+    }).catch((err)=> console.log(err))
+    setInterval(() => {
+      setAlert(false)
+    }, 4000);
   }
   return (
     <>
       <div className="w-screen h-screen flex flex-col items-start justify-start overflow-hidden ">
         {/* Alert section */}
-
+          <AnimatePresence>
+            {alert && <Alert status={"Success"} alertMsg={"Project Saved"}  />}
+          </AnimatePresence>
         {/* header section */}
+        <header className="w-full items-center flex justify-between px-12 py-5 ">
+          <div className="flex items-center justify-center gap-6 ">
+            <Link to={"/home/projects"}>
+              <img
+                className=" w-32 h-auto object-contain"
+                src="https://blog.codepen.io/wp-content/uploads/2022/01/codepen-wordmark-display-inside-white@10x.png"
+              />
+            </Link>
+            <div className="flex flex-col items-start justify-start">
+              <div className="flex items-center justify-center gap-3">
+                <AnimatePresence>
+                  {isTitle ? (
+                    <>
+                      <motion.input
+                        key={"TitleInput"}
+                        type="text"
+                        className="px-3 py-2 rounded-md bg-transparent text-primaryText text-base border-spacing-1"
+                        placeholder="Your Title"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <motion.p
+                        key={"titleLabel"}
+                        className="px-3 py-2 text-white text-lg"
+                      >
+                        {title}
+                      </motion.p>
+                    </>
+                  )}
+                </AnimatePresence>
 
+                <AnimatePresence>
+                  {isTitle ? (
+                    <>
+                      <motion.div
+                        className="cusror-pointer"
+                        key={"MdCheck"}
+                        whileTap={{ scale: 0.9 }}
+                        onClick={() => setIsTitle(false)}
+                      >
+                        <MdCheck className="text-2xl text-emerald-500 cursor-pointer" />{" "}
+                      </motion.div>
+                    </>
+                  ) : (
+                    <>
+                      <motion.div
+                        className="cusror-pointer"
+                        key={"MdEdit"}
+                        whileTap={{ scale: 0.9 }}
+                        onClick={() => setIsTitle(true)}
+                      >
+                        <MdEdit className="text-2xl text-primaryText cursor-pointer" />{" "}
+                      </motion.div>
+                    </>
+                  )}
+                </AnimatePresence>
+              </div>
+              {/* follow */}
+              <div className="flex items-center justify-center px-3 -mt-2 gap-2 ">
+                <p className="text-primaryText text-sm">
+                  {user?.displayName
+                    ? user?.displayName
+                    : `${user?.email.split("@")[0]} `}
+                </p>
+                <motion.div
+                  whileTap={{ scale: 0.9 }}
+                  className="text-[11px] bg-emerald-500 rounded-sm px-2 py-[1px] text-primaryText font-semibold cursor-pointer"
+                >
+                  + Follow
+                </motion.div>
+              </div>
+            </div>
+          </div>
+          {/* user section */}
+          {user && (
+            <div className="flex items-center justify-center gap-4">
+              <motion.button
+                onClick={saveProgram}
+                whileTap={{ scale: 0.9 }}
+                className="px-6 py-4 bg-primaryText cursor-pointer text-base text-primary font-semibold rounded-md"
+              >
+                Save
+              </motion.button>
+              <UserProfileDetail/>
+            </div>
+          )}
+        </header>
         {/* coding section */}
 
-        <div>
+        <div className="overflow-hidden">
           {/* horizontal */}
           <SplitPane
             split="horizontal"
@@ -128,8 +249,15 @@ const NewProject = () => {
               </SplitPane>
             </SplitPane>
             {/* bottom result section */}
-            <div className="bg-white" style={{overflow: "hidden", height:"100%"}}>
-                <iframe title="Result" srcDoc={output} style={{border:"none", width:'100%', height:'100%'}} />
+            <div
+              className="bg-white"
+              style={{ overflow: "hidden", height: "100%" }}
+            >
+              <iframe
+                title="Result"
+                srcDoc={output}
+                style={{ border: "none", width: "100%", height: "100%" }}
+              />
             </div>
           </SplitPane>
         </div>
