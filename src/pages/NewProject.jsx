@@ -190,7 +190,7 @@ const NewProject = () => {
                 <div className="w-full  px-2">
                   <CodeMirror
                     value={html}
-                    height="600px"
+                    height="450px"
                     theme={"dark"}
                     //mode={htmlMixed}
                     extensions={[javascript({ jsx: true })]}
@@ -217,7 +217,7 @@ const NewProject = () => {
                   <div className="w-full  px-2">
                     <CodeMirror
                       value={css}
-                      height="600px"
+                      height="450px"
                       theme={"dark"}
                       extensions={[javascript({ jsx: true })]}
                       onChange={(value, viewUpdate) => {
@@ -244,7 +244,7 @@ const NewProject = () => {
                   <div className="w-full  px-2">
                     <CodeMirror
                       value={js}
-                      height="800px"
+                      height="450px"
                       theme={"dark"}
                       extensions={[javascript({ jsx: true })]}
                       onChange={(value, viewUpdate) => {
