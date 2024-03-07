@@ -11,9 +11,8 @@ import { useSelector } from "react-redux";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "../config/firebase.config";
 import { Alert, UserProfileDetail } from "../components";
-import {html} from '@codemirror/lang-html'
-
-const NewProject = () => {
+import { useParams } from "react-router-dom";
+const ExistingProject = () => {
   const [html, setHtml] = useState("");
   const [css, setCss] = useState("");
   const [js, setJs] = useState("");
@@ -22,11 +21,27 @@ const NewProject = () => {
 
   const [isTitle, setIsTitle] = useState("");
   const [title, setTitle] = useState("Untitled");
-  const user = useSelector((state) => state?.user?.value);
-  useEffect(() => {
-    updateOutput();
-  }, [html, css, js]);
+  const projects = useSelector((state) => state?.project?.projects);
 
+  const user = useSelector((state) => state?.user?.value);
+  const params = useParams();
+  const projectId = params.project;
+  const projectIndex = projects.findIndex((project) => project.id === projectId);
+  const project = projects[projectIndex];
+  console.log(project)
+   useEffect(() => {
+     updateOutput();
+   }, [html, css, js]);
+  useEffect(() => {
+    if (project) {
+      setHtml(project.html);
+      setCss(project.css);
+      setJs(project.js);
+      setTitle(project.title);
+      //setUsername(project.username);
+      updateOutput();
+    }
+  }, [project]);
   const updateOutput = () => {
     const combineoutput = `
     <html>
@@ -107,7 +122,7 @@ const NewProject = () => {
                 </AnimatePresence>
 
                 <AnimatePresence>
-                  {isTitle ? (
+                  
                     <>
                       <motion.div
                         className="cusror-pointer"
@@ -115,29 +130,17 @@ const NewProject = () => {
                         whileTap={{ scale: 0.9 }}
                         onClick={() => setIsTitle(false)}
                       >
-                        <MdCheck className="text-2xl text-emerald-500 cursor-pointer" />{" "}
                       </motion.div>
                     </>
-                  ) : (
-                    <>
-                      <motion.div
-                        className="cusror-pointer"
-                        key={"MdEdit"}
-                        whileTap={{ scale: 0.9 }}
-                        onClick={() => setIsTitle(true)}
-                      >
-                        <MdEdit className="text-2xl text-primaryText cursor-pointer" />{" "}
-                      </motion.div>
-                    </>
-                  )}
+                  
+                   
+                  
                 </AnimatePresence>
               </div>
               {/* follow */}
               <div className="flex items-center justify-center px-3 -mt-2 gap-2 ">
                 <p className="text-primaryText text-sm">
-                  {user?.displayName
-                    ? user?.displayName
-                    : `${user?.email.split("@")[0]} `}
+                  {project.username}
                 </p>
                 <motion.div
                   whileTap={{ scale: 0.9 }}
@@ -151,13 +154,13 @@ const NewProject = () => {
           {/* user section */}
           {user && (
             <div className="flex items-center justify-center gap-4">
-              <motion.button
+              {/* <motion.button
                 onClick={saveProgram}
                 whileTap={{ scale: 0.9 }}
                 className="px-6 py-4 bg-primaryText cursor-pointer text-base text-primary font-semibold rounded-md"
               >
                 Save
-              </motion.button>
+              </motion.button> */}
               <UserProfileDetail/>
             </div>
           )}
@@ -192,7 +195,6 @@ const NewProject = () => {
                     value={html}
                     height="600px"
                     theme={"dark"}
-                    //mode={htmlMixed}
                     extensions={[javascript({ jsx: true })]}
                     onChange={(value, viewUpdate) => {
                       setHtml(value);
@@ -273,4 +275,4 @@ const NewProject = () => {
   );
 };
 
-export default NewProject;
+export default ExistingProject;

@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Spinner } from "./components/index";
 import { setUser } from "./context/slice/userSlice";
 import { setProjects } from "./context/slice/projectSlice";
+import ExistingProject from "./pages/ExistingProject";
 
 export const App = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -69,7 +70,7 @@ export const App = () => {
           <Routes>
             <Route path="/home/*" element={<Home />} />
             <Route path="/newProject" element={<NewProject />} />
-            <Route path={`/home/projects/${projects.id}`} element={<NewProject />} />
+            <Route path={`/home/projects/:project`}  element={<ExistingProject />} />
 
             {/* if route is not matching*/}
             <Route path="*" element={<Navigate to={"/home"} />} />

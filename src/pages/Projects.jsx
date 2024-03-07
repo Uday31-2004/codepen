@@ -61,7 +61,8 @@ const ProjectCard = ({ project, index, onClick }) => {
   const navigate = useNavigate();
 
   const handleProjectClick = () => {
-    navigate(`/home/projects/${project.id}`); // Call navigate with the project id
+    const id =project.id
+    navigate("/home/projects/" +id); // Call navigate with the project id
   };
   return (
     <motion.div
