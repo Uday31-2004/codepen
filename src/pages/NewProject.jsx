@@ -43,6 +43,7 @@ const NewProject = () => {
   const saveProgram = async()=>{
     const id =`${Date.now()}`
     const username=user?.username || `${user?.email.split("@")[0]} `
+    const userPhoto = user?.photoURL
     const _doc={
       id:id,
       title:title,
@@ -50,8 +51,8 @@ const NewProject = () => {
       css:css,
       js:js,
       output:output,
-      username:username
-      
+      username:username,
+      userPhoto:userPhoto,
     }
     await setDoc(doc(db, "Projects", id), _doc)
     .then((res)=>{
@@ -161,7 +162,7 @@ const NewProject = () => {
         </header>
         {/* coding section */}
 
-        <div className="overflow-hidden">
+        <div className="overflow-hidden h-full minhfull">
           {/* horizontal */}
           <SplitPane
             split="horizontal"
@@ -170,7 +171,7 @@ const NewProject = () => {
             defaultSize={"50%"}
           >
             {/* top coding section */}
-            <SplitPane split="vertical" minSize={500}>
+            <SplitPane split="vertical" minSize={500} >
               {/*html coding section */}
               <div className="w-full h-full flex flex-col items-start justify-start">
                 <div className="w-full flex items-center justify-between">
@@ -198,7 +199,7 @@ const NewProject = () => {
               </div>
               <SplitPane split="vertical" minSize={500}>
                 {/*css coding section */}
-                <div className="w-full h-full flex flex-col items-start justify-start">
+                <div className="w-full min-h-full  flex flex-col items-start justify-start">
                   <div className="w-full flex items-center justify-between">
                     <div className="bg-secondary px-4 py-2 border-t-4 flex items-center justify-center gap-3 border-t-gray-500">
                       <FaCss3 className="text-xl text-sky-500" />
@@ -223,9 +224,9 @@ const NewProject = () => {
                   </div>
                 </div>
                 {/*js coding section */}
-                <div className="w-full h-full flex flex-col items-start justify-start">
-                  <div className="w-full flex items-center justify-between">
-                    <div className="bg-secondary px-4 py-2 border-t-4 flex items-center justify-center gap-3 border-t-gray-500">
+                <div className="w-full h-full flex flex-col items-start object-cover justify-start">
+                  <div className="w-full h-full flex items-center justify-between">
+                    <div className="bg-secondary h-full px-4 py-2 border-t-4 flex items-center justify-center gap-3 border-t-gray-500">
                       <FaJs className="text-xl text-yellow-500" />
                       <p className="text-primaryText font-semibold ">
                         Javascript
@@ -240,7 +241,7 @@ const NewProject = () => {
                   <div className="w-full  px-2">
                     <CodeMirror
                       value={js}
-                      height="600px"
+                      height="800px"
                       theme={"dark"}
                       extensions={[javascript({ jsx: true })]}
                       onChange={(value, viewUpdate) => {

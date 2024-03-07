@@ -12,7 +12,7 @@ import {
   query,
   setDoc,
 } from "firebase/firestore";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Spinner } from "./components/index";
 import { setUser } from "./context/slice/userSlice";
 import { setProjects } from "./context/slice/projectSlice";
@@ -21,6 +21,8 @@ export const App = () => {
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const projects = useSelector((state) => state?.project?.projects);
+  console.log(projects.id)
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((userCred) => {
       if (userCred) {
@@ -67,6 +69,7 @@ export const App = () => {
           <Routes>
             <Route path="/home/*" element={<Home />} />
             <Route path="/newProject" element={<NewProject />} />
+            <Route path={`/home/projects/${projects.id}`} element={<NewProject />} />
 
             {/* if route is not matching*/}
             <Route path="*" element={<Navigate to={"/home"} />} />

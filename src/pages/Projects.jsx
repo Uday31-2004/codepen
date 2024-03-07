@@ -11,9 +11,7 @@ const Projects = () => {
   console.log(searchQuery);
   const [filtered, setFiltered] = useState(null);
   const navigate = useNavigate();
-  const onProjectClick =()=>{ navigate(`/home/projects/${projects.id}`)
 
-  }
   useEffect(() => {
     if (searchQuery.length > 0) {
       setFiltered(
@@ -39,7 +37,7 @@ const Projects = () => {
                 key={project.id}
                 project={project}
                 index={index}
-                onClick={onProjectClick}
+                //onClick={onProjectClick}
               /> // Add this prop/>
             ))}
         </>
@@ -51,7 +49,7 @@ const Projects = () => {
                 key={project.id}
                 project={project}
                 index={index}
-                onClick={onProjectClick}
+                //onClick={onProjectClick}
               /> // Add this prop/>
             ))}
         </>
@@ -59,14 +57,15 @@ const Projects = () => {
     </div>
   );
 };
-const ProjectCard = ({ project, index }) => {
-  const navigate = useNavigate()
-  const onProjectClick =()=>{ navigate(`/home/projects/${project.id}`)
+const ProjectCard = ({ project, index, onClick }) => {
+  const navigate = useNavigate();
 
-  }
+  const handleProjectClick = () => {
+    navigate(`/home/projects/${project.id}`); // Call navigate with the project id
+  };
   return (
     <motion.div
-      onChange={onProjectClick}
+      onClick={handleProjectClick}
       key={index}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -86,28 +85,24 @@ const ProjectCard = ({ project, index }) => {
       </div>
       <div className="flex items-center justify-start gap-3 w-full">
         <div className="w-14 h-14 flex items-center justify-center rounded-xl overflow-hidden cursor-pointer bg-emerald-500">
-          {project?.user?.photoURL ? (
+          {project?.userPhoto ? (
             <motion.img
               whileHover={{ scale: 1.2 }}
-              src={project?.user?.photoURL}
+              src={project?.userPhoto}
               alt=""
               referrerPolicy="no-referrer"
               className="w-full h-full object-cover"
             />
           ) : (
             <p className="text-xl text-white font-semibold capitalize">
-              {project?.user?.email[0]}
+              {project?.username[0]}
             </p>
           )}
         </div>
         {/*name */}
         <div>
           <p className="text-white text-lg capitalize">{project?.title}</p>
-          <p className="text-primaryText text-sm">
-            {project?.user?.displayName
-              ? project?.user?.displayName
-              : `${project?.user?.email.split("@")[0]} `}
-          </p>
+          <p className="text-primaryText text-sm">{project?.username}</p>
         </div>
         {/*collection */}
         <motion.div
